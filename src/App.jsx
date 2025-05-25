@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Search as SearchIcon } from 'lucide-react';
+import GameDetailsPage from './GameDetailsPage'; // Make sure this file exists
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -7,7 +9,6 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [sortOption, setSortOption] = useState('alpha');
 
-  // Mock data for Pokémon fangames and ROM hacks with release dates and features
   const gamesData = [
     {
       id: 1,
@@ -188,7 +189,7 @@ export default function App() {
     }
   ];
 
-  // Find current game by hash
+
   const gameSlug = window.location.hash.replace('#game/', '').toLowerCase();
   const selectedGame = gamesData.find(game => game.link.includes(gameSlug));
 
@@ -244,13 +245,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
-      {/* Hero Section */}
       <header className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 p-8 shadow-lg">
         <div className="container mx-auto text-center">
           <h1 className="text-5xl font-extrabold mb-4">PokéDokie</h1>
           <p className="text-xl mb-6">Discover the latest complete Pokémon fangames and ROM hacks!</p>
 
-          {/* Search Bar */}
           <div className="flex justify-center mb-6">
             <input
               type="text"
@@ -264,7 +263,6 @@ export default function App() {
             </button>
           </div>
 
-          {/* Sort and Category Filter */}
           <div className="flex flex-wrap justify-center gap-2">
             <select
               value={sortOption}
@@ -276,141 +274,54 @@ export default function App() {
               <option value="oldest">Oldest</option>
             </select>
 
-            <button
-              onClick={() => setActiveCategory('all')}
-              className={`px-4 py-2 rounded-full transition ${
-                activeCategory === 'all'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-800 hover:bg-gray-200'
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setActiveCategory('romhack')}
-              className={`px-4 py-2 rounded-full transition ${
-                activeCategory === 'romhack'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-800 hover:bg-gray-200'
-              }`}
-            >
-              ROM Hacks
-            </button>
-            <button
-              onClick={() => setActiveCategory('fangame')}
-              className={`px-4 py-2 rounded-full transition ${
-                activeCategory === 'fangame'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-800 hover:bg-gray-200'
-              }`}
-            >
-              Fangames
-            </button>
+            {['all', 'romhack', 'fangame'].map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full transition ${
+                  activeCategory === category
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-white text-gray-800 hover:bg-gray-200'
+                }`}
+              >
+                {category === 'all' ? 'All' : category === 'romhack' ? 'ROM Hacks' : 'Fangames'}
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
-      {/* Game Grid */}
-      <main className="container mx-auto p-6">
-        <h2 className="text-3xl font-bold mb-6 text-center">Available Games</h2>
-        {filteredGames.length === 0 ? (
-          <p className="text-center text-gray-300">No games found matching your criteria.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredGames.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
-          </div>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 p-6 mt-12">
-        <div className="container mx-auto text-center">
-          <p>&copy; {new Date().getFullYear()} PokéDokie - All rights reserved</p>
-          <p className="mt-2 text-sm text-gray-400">Created for passionate Pokémon fans around the world.</p>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-// Game Card Component
-function GameCard({ game }) {
-  return (
-    <a href={game.link}>
-      <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
-        <img src={game.image} alt={game.title} className="w-full h-48 object-cover" />
-        <div className="p-4">
-          <h3 className="text-xl font-bold mb-2">{game.title}</h3>
-          <p className="text-gray-300 mb-4 line-clamp-2">{game.description}</p>
-          <span className="block text-center w-full bg-green-600 hover:bg-green-700 transition duration-300 py-2 rounded-full font-semibold">
-            View Details
-          </span>
-        </div>
-      </div>
-    </a>
-  );
-}
-
-// Individual Game Page
-function GameDetailsPage({ game }) {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
-      <section className="container mx-auto p-6">
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            window.history.back();
-          }}
-          className="inline-block mb-4 text-blue-400 hover:text-blue-300 transition"
-        >
-          ← Back to all games
-        </a>
-        <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-          <img src={game.image} alt={game.title} className="w-full h-64 object-cover" />
-          <div className="p-6">
-            <h1 className="text-4xl font-bold mb-4">{game.title}</h1>
-            <p className="text-gray-300 mb-6 text-lg">{game.description}</p>
-            <ul className="list-disc pl-6 space-y-2 mb-6">
-              {game.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
-            <p className="mb-2 text-gray-400">Platform: {game.platform}</p>
-            <p className="mb-4 text-xs text-gray-500 italic">
-              Link not opening? Right click the button and press: Open Link in New Tab.
-            </p>
-            <div className="space-y-2">
-              {game.downloads.map((download, index) => (
+      {/* Game List */}
+      <main className="container mx-auto py-8 px-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredGames.map((game) => (
+            <div
+              key={game.id}
+              className="bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transform transition"
+            >
+              <img src={game.image.trim()} alt={game.title} className="w-full h-48 object-cover" />
+              <div className="p-4">
+                <h2 className="text-2xl font-bold mb-2">{game.title}</h2>
+                <p className="text-sm mb-2">{game.description}</p>
+                <div className="mb-2 text-xs text-gray-400">{game.releaseDate}</div>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {game.features.map((feature, idx) => (
+                    <span key={idx} className="bg-purple-700 text-xs px-2 py-1 rounded-full">
+                      {feature}
+                    </span>
+                  ))}
+                </div>
                 <a
-                  key={index}
-                  href={download.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center w-full bg-green-600 hover:bg-green-700 transition duration-300 py-2 rounded-full font-semibold"
+                  href={game.link}
+                  className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full transition"
                 >
-                  {download.name}
+                  View Game
                 </a>
-              ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </main>
     </div>
   );
-}
-
-// Search Icon SVG
-function SearchIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-  );
-}
-
-export default function App() {
-  return <h1>Hello, PokeDokie!</h1>;
 }
