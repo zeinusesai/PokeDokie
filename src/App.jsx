@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Search as SearchIcon } from 'lucide-react';
-import GameDetailsPage from './GameDetailsPage'; // Make sure this file exists
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
