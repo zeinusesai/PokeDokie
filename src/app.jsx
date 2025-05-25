@@ -410,3 +410,7 @@ function SearchIcon() {
     </svg>
   );
 }
+
+export default function App() {
+  return <h1>Hello, PokeDokie!</h1>;
+}
